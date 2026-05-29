@@ -1,0 +1,16 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/.terraform.lock.hcl
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Context (internal evaluation docs)
+.context/

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+    app.kubernetes.io/part-of: opsboard

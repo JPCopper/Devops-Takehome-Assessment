@@ -1,0 +1,49 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+# Production runs 3 replicas for high availability.
+replicas:
+  - name: opsboard
+    count: 3
+
+commonLabels:
+  env: prod
+
+# TODO: Pin the image to a specific digest for production deployments.
+# Using a digest instead of a tag ensures immutability and prevents
+# unexpected changes if a tag is overwritten in the registry.
+#
+# images:
+#   - name: opsboard
+#     newName: registry.example.com/opsboard
+#     digest: sha256:abc123...
+
+# TODO: Add production-specific configuration and hardening resources.
+# Consider adding these as additional resources or patches:
+#
+# 1. HorizontalPodAutoscaler (HPA)
+#    - Scale based on CPU/memory utilization or custom metrics
+#    - Set minReplicas, maxReplicas, and target utilization
+#
+# 2. PodDisruptionBudget (PDB)
+#    - Ensure at least N pods remain available during disruptions
+#    - Use minAvailable or maxUnavailable
+#
+# 3. NetworkPolicies
+#    - Restrict ingress to only the ingress controller
+#    - Restrict egress to only required services (database, DNS)
+#    - Default-deny all other traffic
+#
+# 4. Production ConfigMap/Secret patches
+#    - Production database URL (preferably via sealed-secret or external-secrets)
+#    - Any production-specific environment variables
+#
+# patches:
+#   - target:
+#       kind: Deployment
+#       name: opsboard
+#     patch: |-
+#       ...

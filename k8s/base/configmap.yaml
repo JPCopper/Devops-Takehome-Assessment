@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opsboard-config
+  namespace: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+data:
+  NODE_ENV: "production"
+  # TODO: Replace with actual database connection string.
+  # In production, consider using a Secret instead of a ConfigMap for sensitive values.
+  DATABASE_URL: "postgresql://user:password@db-host:5432/opsboard"
+  NEXT_TELEMETRY_DISABLED: "1"

@@ -1,0 +1,100 @@
+# -----------------------------------------------------------------------
+# ArgoCD Application Manifest
+# -----------------------------------------------------------------------
+# This resource tells ArgoCD to watch a Git repository and automatically
+# deploy the Kubernetes manifests found at a given path. ArgoCD compares
+# the desired state (in Git) with the live state (in the cluster) and
+# reconciles any differences.
+#
+# Candidates: complete the TODOs below to make this a fully functional
+# ArgoCD Application. Refer to the ArgoCD docs:
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
+# -----------------------------------------------------------------------
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opsboard-dev
+  # Applications are typically created in the argocd namespace
+  # where the ArgoCD controller runs.
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: opsboard
+    env: dev
+  # finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+  # ^ Uncomment to enable cascading delete: when the Application is
+  #   deleted, ArgoCD will also delete all the resources it created.
+spec:
+  # The project this application belongs to. "default" is fine for
+  # single-team setups; create AppProjects for multi-team RBAC.
+  project: default
+
+  # ---- Source: where ArgoCD reads the desired state ----
+  source:
+    # TODO: Replace with the actual repository URL for this project.
+    repoURL: https://github.com/your-org/opsboard.git
+    targetRevision: HEAD
+    path: k8s/overlays/dev
+
+    # Kustomize-specific configuration (ArgoCD auto-detects Kustomize
+    # when it finds a kustomization.yaml in the path).
+    # kustomize:
+    #   images:
+    #     - opsboard=registry.example.com/opsboard:dev-latest
+
+  # ---- Destination: where ArgoCD deploys the resources ----
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opsboard
+
+  # ---- Sync Policy ----
+  # The sync policy controls how and when ArgoCD applies changes.
+  #
+  # TODO: Configure an automated sync policy with the following:
+  #   - automated: enable automatic syncing when Git changes are detected
+  #     - prune: automatically delete resources that are no longer in Git
+  #     - selfHeal: revert manual changes made directly to the cluster
+  #   - syncOptions: additional sync behavior flags
+  #     - CreateNamespace=true: create the target namespace if it doesn't exist
+  #     - PrunePropagationPolicy=foreground: wait for dependents before pruning
+  #     - ServerSideApply=true: use server-side apply for better conflict handling
+  #
+  # syncPolicy:
+  #   automated:
+  #     prune: ???
+  #     selfHeal: ???
+  #   syncOptions:
+  #     - ???
+  #   retry:
+  #     limit: ???
+  #     backoff:
+  #       duration: ???
+  #       factor: ???
+  #       maxDuration: ???
+
+  # TODO: Configure a retry strategy so transient failures don't
+  # block deployments. Consider how many retries and what backoff
+  # parameters are appropriate.
+
+  # TODO: (Optional) Add ignoreDifferences for fields that are
+  # expected to differ between Git and the live state, such as
+  # fields set by mutating admission webhooks.
+  #
+  # ignoreDifferences:
+  #   - group: apps
+  #     kind: Deployment
+  #     jsonPointers:
+  #       - /spec/replicas   # if using HPA
+
+  # TODO: (Optional) Configure notification triggers to alert on
+  # sync success, failure, or health degradation. This requires
+  # the argocd-notifications controller to be installed.
+  # See: https://argocd-notifications.readthedocs.io/
+  #
+  # Notifications are typically configured via annotations:
+  #   metadata:
+  #     annotations:
+  #       notifications.argoproj.io/subscribe.on-sync-succeeded.slack: my-channel
+  #       notifications.argoproj.io/subscribe.on-sync-failed.slack: my-channel
+  #       notifications.argoproj.io/subscribe.on-health-degraded.slack: my-channel

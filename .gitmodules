@@ -1,0 +1,3 @@
+[submodule "app"]
+	path = app
+	url = git@github.com:kopy-kat/infra-takehome-app-james.git
