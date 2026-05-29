@@ -1,45 +1,51 @@
-# OpsBoard — DevOps Take-Home
+# BlockExplorer — DevOps Take-Home
 
 ## Context
 
-OpsBoard is a Next.js incident tracking dashboard backed by PostgreSQL. Your team inherited it from a previous contractor. The app runs locally and the codebase has 10 release tags (`v1.1`–`v1.10`), but there is no deployment pipeline, no infrastructure-as-code, and no automated recovery.
+BlockExplorer is a golang/react blockchain explorer, backed by PostgreSQL. Your team inherited it from a previous contractor. The app runs locally and the codebase has 5 release tags (`v1.1`–`v1.5`), but there is no deployment pipeline, no infrastructure-as-code, and no automated recovery.
 
-**Your job: make this application production-ready.**
+**Your task: make this application production-ready.**
 
 ## Repository Layout
 
 ```
 .
-├── app/                        # Application source (git submodule, pinned to v1.10)
-│   ├── src/                    # Next.js app, API routes, components
-│   ├── prisma/                 # Database schema and seed data
-│   ├── Dockerfile              # Multi-stage container build
-│   └── vitest.config.ts        # Test configuration
-├── terraform/                  # IaC skeletons (LocalStack)
-│   └── modules/                # networking, database, eks
-├── k8s/
-│   ├── base/                   # Kustomize base manifests
-│   ├── overlays/               # dev / staging / prod overrides
-│   └── argo/                   # ArgoCD + Argo Rollouts examples
-├── .github/workflows/          # CI pipeline (deploy pipeline is TODO)
-├── docker-compose.yml          # Local dev stack (app + postgres)
-├── scripts/                    # Setup, seed, health-check, load-test helpers
-└── docs/                       # Architecture and local-dev guides
+├── cmd/server/main.go      # Application entry point
+├── internal/
+│   ├── api/
+│   │   ├── handlers.go     # HTTP handlers
+│   │   └── router.go       # Router setup + static file serving
+│   └── db/
+│       ├── db.go           # Database connection + queries
+│       └── models.go       # Data models
+├── frontend/               # React SPA (Vite + TypeScript)
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Blocks.tsx
+│   │   │   └── BlockDetail.tsx
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   └── package.json
+├── db/
+│   ├── schema.sql          # Database DDL
+│   └── seed.sql            # Sample data
+├── Dockerfile              # Multi-stage build
+└── README.md
 ```
 
 ## Deliverables
 
 ### 1. Versioned Container Builds
 
-The application has 10 release tags in its git history. Your tooling should support building and deploying any version by tag.
+The application has 5 release tags in its git history. Your tooling should support building and deploying any version by tag.
 
 ### 2. CI/CD Pipeline
 
 A CI workflow (`.github/workflows/ci.yml`) already runs lint, build, test, and Docker build. Extend this into a full deployment pipeline:
 
-- Build and push container images to a registry
+- Build and push container image(s) to a registry
 - Multi-environment promotion: dev → staging → prod
-- Deployment gates — tests must pass before promotion
+- Deployment gates — there should exist confirmation before deployment into production
 - Secret management (OIDC federation preferred over static credentials)
 - Immutable image tagging strategy (commit SHA, semver, or both)
 
@@ -62,7 +68,7 @@ Base manifests exist under `k8s/base/`. They are intentionally incomplete. Add:
 
 - Liveness, readiness, and startup probes
 - Resource requests and limits
-- Pod security context (`runAsNonRoot`, `readOnlyRootFilesystem`, drop capabilities)
+- Pod security context (`runAsNonRoot`, `readOnlyRootFilesystem`, drop capabilitie etc)
 - PodDisruptionBudget
 - Environment-specific overrides in `k8s/overlays/`
 
@@ -77,14 +83,13 @@ Example files are provided at `k8s/argo/`. Set up:
 
 ### 6. Bonus
 
-- Improve `/api/health` to verify database connectivity
 - Monitoring module in Terraform (CloudWatch or Prometheus)
 - Alerting rules and dashboard definitions
 - Document your approach in `SOLUTION.md`
 
 ## Getting Started
 
-A `docker-compose.yml` and helper scripts are included. The app submodule is pinned to `v1.10`. Explore the repo and figure out how to get it running.
+A `docker-compose.yml` and helper scripts are included. The app submodule is pinned to `v1.5`. Explore the repo and figure out how to get it running.
 
 ## Evaluation Criteria
 
@@ -99,11 +104,13 @@ A `docker-compose.yml` and helper scripts are included. The app submodule is pin
 
 ## Time Expectation
 
-This is a oneday-sized project. Prioritize quality over completeness — a well-documented partial solution with clear reasoning beats a rushed complete one.
+This is a oneday-sized project. Prioritize quality over completeness — a well-documented, partial solution that has clear reasoning always beats a rushed, complete one that you cannot explain.
+
+Prioritise clearly documented, well-reasoned changes.
 
 ## Use of AI / Agents
 
-Feel free to use any AI help you seem fit
+You are free to use any AI you think will help - consider adding agents.md/skills.md/claude.md if so.
 
 ## Submission
 

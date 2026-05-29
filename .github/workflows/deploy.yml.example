@@ -46,7 +46,7 @@ jobs:
   #       uses: aws-actions/amazon-ecr-login@v2
   #     - name: Build and push
   #       run: |
-  #         docker build -t $ECR_REPO:${{ github.sha }} ./app
+  #         docker build -t $ECR_REPO:${{ github.sha }} .
   #         docker push $ECR_REPO:${{ github.sha }}
 
   # TODO: Implement deploy-dev job
@@ -77,9 +77,8 @@ jobs:
   #     - Promote image tag to production
   #     - Monitor canary analysis
   #     - Verify rollout completion
-
   placeholder:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - run: echo "Deploy pipeline not yet implemented. See comments above for guidance."
+      - run: echo "TODO - Implement deployment pipeline"
