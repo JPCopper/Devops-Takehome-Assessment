@@ -114,4 +114,8 @@ You are free to use any AI you think will help - consider adding agents.md/skill
 
 ## Submission
 
-Fork this repository privately, complete your work, and invite the reviewer as a collaborator. Include a `SOLUTION.md` documenting your approach, decisions, and any trade-offs.
+Please clone this repository and work from a branch; ensure your branch name follows our convetions: `feature-DV-100-<NAME>`.
+
+Complete your work and raise a PR for us to review. Include a `SOLUTION.md` documenting your approach, any decisions or any trade-offs you made, and anything else you deem relevant to highlight.
+
+Good luck!
