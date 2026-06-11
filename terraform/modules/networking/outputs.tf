@@ -12,14 +12,12 @@ output "public_subnet_ids" {
   value       = aws_subnet.public[*].id
 }
 
-# TODO: Uncomment after implementing private subnets
-# output "private_subnet_ids" {
-#   description = "List of private subnet IDs"
-#   value       = aws_subnet.private[*].id
-# }
+output "private_subnet_ids" {
+  description = "List of private subnet IDs"
+  value       = aws_subnet.private[*].id
+}
 
-# TODO: Uncomment after implementing the NAT gateway
-# output "nat_gateway_id" {
-#   description = "ID of the NAT gateway"
-#   value       = aws_nat_gateway.main.id
-# }
+output "nat_gateway_ids" {
+  description = "List of NAT gateway IDs (one per AZ when multi-AZ, single otherwise)"
+  value       = aws_nat_gateway.main[*].id
+}

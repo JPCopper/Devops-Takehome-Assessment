@@ -1,0 +1,32 @@
+# =============================================================================
+# Example terraform.tfvars — OpsBoard Infrastructure
+# =============================================================================
+# Copy this file to terraform.tfvars and adjust values as needed.
+# For LocalStack development, the defaults work out of the box.
+# =============================================================================
+
+# Deployment environment: dev, staging, or production
+# environment = "dev"
+
+# Project name (used for resource naming and tagging)
+# project_name = "opsboard"
+
+# AWS region
+# aws_region = "us-east-1"
+
+# Database configuration
+# db_instance_class = "db.t3.micro"
+# db_name           = "opsboard"
+# db_username       = "opsboard"
+# db_password       = ""  # Leave empty to auto-generate
+
+# EKS cluster configuration
+# eks_cluster_version = "1.29"
+# node_instance_type  = "t3.medium"
+# node_desired_count  = 2
+
+# NAT Gateway strategy
+# single_nat_gateway = true   # true = cheaper (single), false = HA (one per AZ)
+
+# Monitoring — email for SNS alerts
+# alert_email = "devops@example.com"

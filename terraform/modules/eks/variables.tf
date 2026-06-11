@@ -17,6 +17,12 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "vpc_cidr" {
+  description = "CIDR block of the VPC, used for security group rules"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
 variable "subnet_ids" {
   description = "List of subnet IDs for the EKS cluster and node groups"
   type        = list(string)
@@ -52,4 +58,16 @@ variable "node_max_count" {
   description = "Maximum number of worker nodes"
   type        = number
   default     = 4
+}
+
+variable "endpoint_private_access" {
+  description = "Enable private access to the EKS cluster API endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "endpoint_public_access" {
+  description = "Enable public access to the EKS cluster API endpoint"
+  type        = bool
+  default     = true
 }
