@@ -1,0 +1,23 @@
+# =============================================================================
+# Canary Service — used by Argo Rollout for traffic splitting
+# =============================================================================
+# Rollouts controller automatically updates the selector on this service
+# to point to canary pods during a rollout, and back to stable after.
+# =============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: opsboard-canary
+  namespace: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+    app.kubernetes.io/component: canary
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: opsboard
