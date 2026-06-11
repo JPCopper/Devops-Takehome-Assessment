@@ -12,19 +12,8 @@ replicas:
 commonLabels:
   env: staging
 
-# TODO: Add staging-specific configuration.
-# Consider:
-#   - Pinning a specific image tag (not :latest) for reproducible deployments
-#   - Staging database connection string via configmap or secret patch
-#   - Enabling additional logging or monitoring
-#
-# images:
-#   - name: opsboard
-#     newTag: staging-abc1234
-#
-# patches:
-#   - target:
-#       kind: ConfigMap
-#       name: opsboard-config
-#     patch: |-
-#       ...
+# Pin a specific image tag for reproducible staging deployments
+images:
+  - name: opsboard
+    newName: registry.example.com/opsboard
+    newTag: staging-latest

@@ -15,65 +15,63 @@ spec:
       labels:
         app.kubernetes.io/name: opsboard
     spec:
-      # TODO: Add a security context for the pod.
-      # Consider: runAsNonRoot, runAsUser, fsGroup, seccompProfile.
-      # Example:
-      #   securityContext:
-      #     runAsNonRoot: true
-      #     runAsUser: 1000
-      #     fsGroup: 1000
-
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: opsboard
           image: opsboard:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 8080
               protocol: TCP
           envFrom:
             - configMapRef:
                 name: opsboard-config
-
-          # TODO: Add liveness and readiness probes.
-          # The application exposes /api/health on port 3000.
-          # Consider appropriate initialDelaySeconds, periodSeconds,
-          # timeoutSeconds, and failureThreshold values.
-          #
-          # livenessProbe:
-          #   httpGet:
-          #     path: /api/health
-          #     port: http
-          #   ...
-          #
-          # readinessProbe:
-          #   httpGet:
-          #     path: /api/health
-          #     port: http
-          #   ...
-
-          # TODO: Add resource requests and limits.
-          # Determine appropriate CPU and memory values for a Next.js application.
-          # Requests guarantee minimum resources; limits cap maximum usage.
-          #
-          # resources:
-          #   requests:
-          #     cpu: ???
-          #     memory: ???
-          #   limits:
-          #     cpu: ???
-          #     memory: ???
-
-          # TODO: Add a container-level security context.
-          # Consider: allowPrivilegeEscalation, readOnlyRootFilesystem, capabilities.
-          #
-          # securityContext:
-          #   allowPrivilegeEscalation: false
-          #   readOnlyRootFilesystem: true
-          #   capabilities:
-          #     drop:
-          #       - ALL
-
-      # TODO: Consider adding a PodDisruptionBudget (as a separate resource)
-      # to ensure availability during voluntary disruptions like node drains.
-      # See: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            capabilities:
+              drop:
+                - ALL
+      terminationGracePeriodSeconds: 30
