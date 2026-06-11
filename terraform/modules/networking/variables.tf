@@ -22,3 +22,15 @@ variable "availability_zones" {
   description = "List of availability zones to deploy subnets into"
   type        = list(string)
 }
+
+variable "route_cidr_block" {
+  description = "Default CIDR block for the route table"
+  type        = string
+  default     = "0.0.0.0/0"
+}
+
+variable "single_nat_gateway" {
+  description = "Use a single NAT gateway (cost-effective) vs. one per AZ (high availability)."
+  type        = bool
+  default     = true
+}

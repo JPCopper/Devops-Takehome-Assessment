@@ -1,0 +1,61 @@
+# =============================================================================
+# ArgoCD Application — OpsBoard
+# =============================================================================
+# This Application tells ArgoCD to watch the k8s/overlays/prod directory
+# in the Git repository and automatically sync changes to the cluster.
+#
+# Sync policy: auto-sync with prune, self-heal, and retry on failure.
+# The destination namespace is managed by Kustomize (namespace.yaml).
+# =============================================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opsboard
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: opsboard
+    app.kubernetes.io/part-of: opsboard
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/opsboard.git
+    targetRevision: HEAD
+    path: k8s/overlays/prod
+    kustomize:
+      images:
+        - ghcr.io/your-org/opsboard:prod
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opsboard
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jsonPointers:
+        - /spec/metrics

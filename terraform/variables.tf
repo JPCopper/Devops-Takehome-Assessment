@@ -40,6 +40,19 @@ variable "db_name" {
   default     = "opsboard"
 }
 
+variable "db_username" {
+  description = "Master username for the database"
+  type        = string
+  default     = "opsboard"
+}
+
+variable "db_password" {
+  description = "Master password for the database. Leave empty to auto-generate."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "eks_cluster_version" {
   description = "Kubernetes version for the EKS cluster"
   type        = string
@@ -56,4 +69,19 @@ variable "node_desired_count" {
   description = "Desired number of worker nodes in the EKS node group"
   type        = number
   default     = 2
+}
+
+variable "alert_email" {
+  description = "Email address for infrastructure alerts via SNS"
+  type        = string
+  default     = ""
+}
+
+variable "single_nat_gateway" {
+  description = <<-EOT
+    Use a single NAT gateway (cost-effective) vs. one per AZ (high availability).
+    Recommended: true for dev/staging, false for production.
+  EOT
+  type        = bool
+  default     = true
 }

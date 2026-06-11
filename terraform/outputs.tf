@@ -10,6 +10,11 @@ output "vpc_id" {
   value       = module.networking.vpc_id
 }
 
+output "private_subnet_ids" {
+  description = "List of private subnet IDs for EKS and RDS"
+  value       = module.networking.private_subnet_ids
+}
+
 output "db_endpoint" {
   description = "Connection endpoint for the RDS PostgreSQL instance"
   value       = module.database.db_endpoint
@@ -25,13 +30,17 @@ output "eks_cluster_name" {
   value       = module.eks.cluster_name
 }
 
-# TODO: Add monitoring outputs once the monitoring module is implemented
-# output "cloudwatch_dashboard_url" {
-#   description = "URL of the CloudWatch dashboard"
-#   value       = module.monitoring.dashboard_url
-# }
-#
-# output "sns_alert_topic_arn" {
-#   description = "ARN of the SNS topic for infrastructure alerts"
-#   value       = module.monitoring.alert_topic_arn
-# }
+output "eks_oidc_provider_arn" {
+  description = "ARN of the OIDC provider for IRSA"
+  value       = module.eks.cluster_oidc_provider_arn
+}
+
+output "cloudwatch_dashboard_url" {
+  description = "URL of the CloudWatch dashboard"
+  value       = module.monitoring.dashboard_url
+}
+
+output "sns_alert_topic_arn" {
+  description = "ARN of the SNS topic for infrastructure alerts"
+  value       = module.monitoring.alert_topic_arn
+}

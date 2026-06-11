@@ -12,7 +12,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
     }
   }
 }
@@ -36,6 +44,7 @@ provider "aws" {
     elbv2          = "http://localhost:4566"
     route53        = "http://localhost:4566"
     cloudwatch     = "http://localhost:4566"
+    cloudwatchlogs = "http://localhost:4566"
     sns            = "http://localhost:4566"
     sqs            = "http://localhost:4566"
     secretsmanager = "http://localhost:4566"

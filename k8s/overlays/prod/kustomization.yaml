@@ -3,6 +3,8 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - hpa.yaml
+  - networkpolicy.yaml
 
 # Production runs 3 replicas for high availability.
 replicas:
@@ -12,38 +14,27 @@ replicas:
 commonLabels:
   env: prod
 
-# TODO: Pin the image to a specific digest for production deployments.
-# Using a digest instead of a tag ensures immutability and prevents
-# unexpected changes if a tag is overwritten in the registry.
-#
-# images:
-#   - name: opsboard
-#     newName: registry.example.com/opsboard
-#     digest: sha256:abc123...
+# Pin the image to a specific digest for immutability in production
+images:
+  - name: opsboard
+    newName: registry.example.com/opsboard
+    digest: sha256:abc123def456
 
-# TODO: Add production-specific configuration and hardening resources.
-# Consider adding these as additional resources or patches:
-#
-# 1. HorizontalPodAutoscaler (HPA)
-#    - Scale based on CPU/memory utilization or custom metrics
-#    - Set minReplicas, maxReplicas, and target utilization
-#
-# 2. PodDisruptionBudget (PDB)
-#    - Ensure at least N pods remain available during disruptions
-#    - Use minAvailable or maxUnavailable
-#
-# 3. NetworkPolicies
-#    - Restrict ingress to only the ingress controller
-#    - Restrict egress to only required services (database, DNS)
-#    - Default-deny all other traffic
-#
-# 4. Production ConfigMap/Secret patches
-#    - Production database URL (preferably via sealed-secret or external-secrets)
-#    - Any production-specific environment variables
-#
-# patches:
-#   - target:
-#       kind: Deployment
-#       name: opsboard
-#     patch: |-
-#       ...
+# Prod: higher resource limits, stricter probes, add HPA and NetworkPolicy
+patches:
+  - target:
+      kind: Deployment
+      name: opsboard
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "200m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "128Mi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "1"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "512Mi"

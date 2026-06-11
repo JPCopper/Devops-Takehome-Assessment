@@ -1,0 +1,60 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: opsboard-default-deny
+  namespace: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+    env: prod
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: opsboard-allow-ingress
+  namespace: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+    env: prod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: opsboard
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: opsboard-allow-egress
+  namespace: opsboard
+  labels:
+    app.kubernetes.io/name: opsboard
+    env: prod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: opsboard
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+        - protocol: UDP
+          port: 53
